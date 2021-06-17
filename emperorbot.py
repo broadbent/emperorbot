@@ -7,6 +7,7 @@ import datetime
 import discord
 from discord.ext import tasks, commands
 import yaml
+import string
 
 __author__ = "Matthew Broadbent"
 __copyright__ = "Copyright 2021, Matthew Broadbent"
@@ -62,6 +63,8 @@ class Language(commands.Cog):
 	async def on_message(self, message):
 		"""Check each message for a swear word."""
 		for word in message.content.split(' '):
+			word = word.lower()
+			word = word.translate(word.maketrans("",""), string.punctuation)
 			if word in swears:
 				await message.channel.send('https://tenor.com/view/captain-america-marvel-avengers-gif-14328153')
 
