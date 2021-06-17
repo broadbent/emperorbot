@@ -8,4 +8,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD [ "python3", "./emperorbot.py", "/emperorbot/config.yml", "/emperorbot/swears.txt"]
+CMD [ "python3", "./emperorbot.py", "/emperorbot/config.yml", "./swears.txt"]
