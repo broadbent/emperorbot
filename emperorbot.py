@@ -17,7 +17,7 @@ __email__ = "matt@matthewbroadbent.net"
 __status__ = "Development"
 
 class Announcements(commands.Cog):
-	
+
 	def __init__(self, bot, config):
 		self.bot = bot
 		self.config = config
@@ -88,8 +88,8 @@ if __name__ == '__main__':
 		command_prefix='^',
 		description='A Discord bot for managing regular announcements.',
 	)
-	config = load_config('config.yml')
+	config = load_config(sys.argv[1])
 	bot.add_cog(Announcements(bot, config))
-	swears = load_swears('swears.txt')
+	swears = load_swears(sys.argv[2])
 	bot.add_cog(Language(bot, swears))
 	bot.run(TOKEN)
