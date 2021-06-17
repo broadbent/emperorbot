@@ -27,14 +27,13 @@ class Announcements(commands.Cog):
 	def cog_unload(self):
 		self.announce.cancel()
 
-	@tasks.loop(seconds=10)
+	@tasks.loop(days=1)
 	async def announce(self):
 		"""Check for upcoming announcements."""
 		for announcement in config['announcements']:
 			today = datetime.datetime.today()
 			if int(announcement[0]) != -1:
 				d = (today - datetime.datetime.utcfromtimestamp(0)).days
-				d = 6
 				if d % int(announcement[0]) == 0:
 					await self.send(announcement[2], announcement[3], announcement[4])
 			elif int(announcement[1]) != -1:
