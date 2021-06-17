@@ -27,7 +27,7 @@ class Announcements(commands.Cog):
 	def cog_unload(self):
 		self.announce.cancel()
 
-	@tasks.loop(days=1)
+	@tasks.loop(hours=24)
 	async def announce(self):
 		"""Check for upcoming announcements."""
 		for announcement in config['announcements']:
