@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """A Discord bot for managing regular announcements."""
 
+import sys
 import os
 import datetime
 import discord
