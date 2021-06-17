@@ -28,7 +28,7 @@ class Announcements(commands.Cog):
 
 	@tasks.loop(seconds=10)
 	async def announce(self):
-	"""Check for upcoming announcements."""
+		"""Check for upcoming announcements."""
 		for announcement in config['announcements']:
 			today = datetime.datetime.today()
 			if int(announcement[0]) != -1:
@@ -41,7 +41,7 @@ class Announcements(commands.Cog):
 					await self.send(announcement[2], announcement[3], announcement[4])
 
 	async def send(self, channel_name, message, link):
-	"""Send contents of announcement (and link) to given channel"""
+		"""Send contents of announcement (and link) to given channel"""
 		await bot.wait_until_ready()
 		channel_id = config['channels'].get(channel_name)
 		channel = self.bot.get_channel(channel_id)
@@ -59,8 +59,8 @@ class Language(commands.Cog):
 		self.swears = swears
 
 	@commands.Cog.listener()
-	"""Check each message for a swear word."""
 	async def on_message(self, message):
+		"""Check each message for a swear word."""
 		for word in message.content.split(' '):
 			if word in swears:
 				await message.channel.send('https://tenor.com/view/captain-america-marvel-avengers-gif-14328153')
