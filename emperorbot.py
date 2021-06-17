@@ -64,7 +64,7 @@ class Language(commands.Cog):
 		"""Check each message for a swear word."""
 		for word in message.content.split(' '):
 			word = word.lower()
-			word = word.translate(word.maketrans("",""), string.punctuation)
+			word = word.translate(str.maketrans('', '', string.punctuation))
 			if word in swears:
 				await message.channel.send('https://tenor.com/view/captain-america-marvel-avengers-gif-14328153')
 
