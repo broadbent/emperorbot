@@ -18,13 +18,13 @@ __maintainer__ = "Matthew Broadbent"
 __email__ = "matt@matthewbroadbent.net"
 __status__ = "Development"
 
+
 class Announcements(commands.Cog):
 
-
-
-	def __init__(self, bot, config):
+	def __init__(self, bot, config_path):
 		self.bot = bot
-		self.config = config
+		self.config_path = config_path
+		self.config = None
 		self.init = False
 		self.announce.start()
 
@@ -35,28 +35,36 @@ class Announcements(commands.Cog):
 	async def announce(self):
 		"""Check for upcoming announcements."""
 		if self.init:
-			for announcement in config['announcements']:
-				today = datetime.datetime.today()
-				if int(announcement[0]) != -1:
-					d = (today - datetime.datetime.utcfromtimestamp(0)).days
-					if d % int(announcement[0]) == 0:
-						await self.send(announcement[2], announcement[3], announcement[4])
-				elif int(announcement[1]) != -1:
-					if today.weekday() == announcement[1]:
-						await self.send(announcement[2], announcement[3], announcement[4])
+			if self.load_config():
+				for announcement in self.config['announcements']:
+					today = datetime.datetime.today()
+					if int(announcement[0]) != -1:
+						d = (today - datetime.datetime.utcfromtimestamp(0)).days
+						if d % int(announcement[0]) == 0:
+							await self.send(announcement[2], announcement[3], announcement[4])
+					elif int(announcement[1]) != -1:
+						if today.weekday() == announcement[1]:
+							await self.send(announcement[2], announcement[3], announcement[4])
 		else:
 			self.init = True
 
 	async def send(self, channel_name, message, link):
 		"""Send contents of announcement (and link) to given channel"""
 		await bot.wait_until_ready()
-		channel_id = config['channels'].get(channel_name)
+		channel_id = self.config['channels'].get(channel_name)
 		channel = self.bot.get_channel(channel_id)
 		await channel.send(message)
 		try:
 			await channel.send(link)
 		except discord.errors.HTTPException:
 			pass
+
+	async def load_config(self):
+		"""Load YAML file containing announcements and channels."""
+		with open(self.config_path, "r") as ymlfile:
+			self.config = yaml.safe_load(ymlfile)
+			return True
+		return False
 
 
 class Language(commands.Cog):
@@ -85,11 +93,7 @@ def load_swears(filename):
 	return swears
 
 
-def load_config(filename):
-	"""Load YAML file containing announcements and channels."""
-	with open(filename, "r") as ymlfile:
-		return yaml.safe_load(ymlfile)
-	return None
+
 
 
 if __name__ == '__main__':
@@ -98,8 +102,7 @@ if __name__ == '__main__':
 		command_prefix='^',
 		description='A Discord bot for managing regular announcements.',
 	)
-	config = load_config(sys.argv[1])
-	bot.add_cog(Announcements(bot, config))
+	bot.add_cog(Announcements(bot, sys.argv[1]))
 	swears = load_swears(sys.argv[2])
 	bot.add_cog(Language(bot, swears))
 	bot.run(TOKEN)
