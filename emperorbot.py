@@ -20,9 +20,12 @@ __status__ = "Development"
 
 class Announcements(commands.Cog):
 
+
+
 	def __init__(self, bot, config):
 		self.bot = bot
 		self.config = config
+		self.init = False
 		self.announce.start()
 
 	def cog_unload(self):
@@ -31,15 +34,18 @@ class Announcements(commands.Cog):
 	@tasks.loop(hours=24)
 	async def announce(self):
 		"""Check for upcoming announcements."""
-		for announcement in config['announcements']:
-			today = datetime.datetime.today()
-			if int(announcement[0]) != -1:
-				d = (today - datetime.datetime.utcfromtimestamp(0)).days
-				if d % int(announcement[0]) == 0:
-					await self.send(announcement[2], announcement[3], announcement[4])
-			elif int(announcement[1]) != -1:
-				if today.weekday() == announcement[1]:
-					await self.send(announcement[2], announcement[3], announcement[4])
+		if self.init:
+			for announcement in config['announcements']:
+				today = datetime.datetime.today()
+				if int(announcement[0]) != -1:
+					d = (today - datetime.datetime.utcfromtimestamp(0)).days
+					if d % int(announcement[0]) == 0:
+						await self.send(announcement[2], announcement[3], announcement[4])
+				elif int(announcement[1]) != -1:
+					if today.weekday() == announcement[1]:
+						await self.send(announcement[2], announcement[3], announcement[4])
+		else:
+			self.init = True
 
 	async def send(self, channel_name, message, link):
 		"""Send contents of announcement (and link) to given channel"""
