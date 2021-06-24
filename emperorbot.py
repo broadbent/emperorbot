@@ -67,6 +67,7 @@ class Language(commands.Cog):
 			word = word.translate(str.maketrans('', '', string.punctuation))
 			if word in swears:
 				await message.channel.send('https://tenor.com/view/captain-america-marvel-avengers-gif-14328153')
+				break
 
 
 def load_swears(filename):
